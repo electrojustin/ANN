@@ -9,7 +9,9 @@ struct neuron_layer
 	struct neuron_layer* next_layer;
 	struct neuron_layer* prev_layer;
 	struct matrix weight_matrix;
+	struct matrix weight_matrix_buf;
 	struct vector bias_vector;
+	struct vector bias_vector_buf;
 	struct vector z_value_vector;
 	struct vector activation_value_vector;
 	struct vector error_vector;

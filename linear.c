@@ -175,7 +175,7 @@ struct matrix matrix_matrix_prod (struct matrix matrix1, struct matrix matrix2)
 		{
 			sum = 0;
 			for (k = 0; k < matrix2.height; k++)
-				sum += matrix1[j][k] * matrix2[k][i];
+				sum += matrix1.elements[j][k] * matrix2.elements[k][i];
 
 			ret.elements[j][i] = sum;
 		}
@@ -243,4 +243,39 @@ struct vector scalar_vector_prod (struct vector vector, double scalar)
 		ret.elements[i] = vector.elements[i] * scalar;
 
 	return ret;
+}
+
+struct matrix copy_matrix (struct matrix matrix)
+{
+	struct matrix ret;
+	int i;
+	int j;
+
+	ret.width = matrix.width;
+	ret.height = matrix.height;
+
+	ret.elements = (double**)malloc(ret.height * sizeof(double*));
+
+	for (i = 0; i < matrix.width; i++)
+	{
+		ret.elements[i] = (double*)malloc(ret.width * sizeof(double));
+
+		for (j = 0; i < matrix.width; j++)
+			ret.elements[i][j] = matrix.elements[i][j];
+	}
+
+	return ret;
+}
+
+struct vector copy_vector (struct vector vector)
+{
+	struct vector ret;
+	int i;
+
+	ret.length = vector.length;
+
+	ret.elements = (double*)malloc(ret.length * sizeof(double));
+
+	for (i = 0; i < vector.length; i++)
+		ret.elements[i] = vector.elements[i];
 }

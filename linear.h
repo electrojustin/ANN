@@ -19,6 +19,8 @@ void free_vector (struct vector* vector);
 
 void free_matrix (struct matrix* matrix);
 
+struct matrix copy_matrix (struct matrix matrix);
+
 struct matrix vector_to_matrix (struct vector vector);
 
 struct matrix matrix_matrix_prod (struct matrix matrix1, struct matrix matrix2);
@@ -42,4 +44,6 @@ double dot_prod (struct vector vector1, struct vector vector2);
 double vector_length (struct vector vector);
 
 struct vector vector_map (struct vector to_map, double (*map_function)(double));
+
+struct vector copy_vector (struct vector vector);
 #endif

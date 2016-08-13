@@ -28,7 +28,9 @@ struct neuron_layer* add_neuron_layer(struct neuron_layer* prev_layer, struct ma
 	struct neuron_layer* to_add = (struct neuron_layer*)malloc(sizeof(struct neuron_layer));
 
 	to_add->weight_matrix = weight_matrix;
+	to_add->weight_matrix_buf = copy_matrix(weight_matrix);
 	to_add->bias_vector = bias_vector;
+	to_add->bias_vector_buf = copy_vector(bias_vector);
 
 	to_add->prev_layer = prev_layer;
 	prev_layer->next_layer = to_add;
@@ -41,7 +43,12 @@ struct neuron_layer* add_neuron_layer(struct neuron_layer* prev_layer, struct ma
 void free_network(struct neuron_layer* to_free)
 {
 	free_matrix(&(to_free->weight_matrix));
+	free_matrix(&(to_free->weight_matrix_buf));
 	free_vector(&(to_free->bias_vector));
+	free_vector(&(to_free->bias_vector_buf));
+	free_vector(&(to_free->z_value_vector));
+	free_vector(&(to_free->activation_value_vector));
+	free_vector(&(to_free->error_vector));
 
 	if (to_free->next_layer != NULL)
 		free_network(to_free->next_layer);
@@ -52,12 +59,14 @@ void free_network(struct neuron_layer* to_free)
 struct vector simulate_network(struct neuron_layer* input_layer)
 {
 	struct vector z_value_vector;
+	struct vector tmp;
 
 	if (input_layer->prev_layer != NULL)
 	{
-		z_value_vector = matrix_vector_prod(input_layer->weight_matrix, input_layer->prev_layer->activation_value_vector);
-		z_value_vector = vector_add(z_value_vector, input_layer->bias_vector);
+		tmp = matrix_vector_prod(input_layer->weight_matrix, input_layer->prev_layer->activation_value_vector);
+		z_value_vector = vector_add(tmp, input_layer->bias_vector);
 		input_layer->z_value_vector = z_value_vector;
+		free_vector(&tmp);
 
 		input_layer->activation_value_vector = vector_map(z_value_vector, activation_function);
 	}

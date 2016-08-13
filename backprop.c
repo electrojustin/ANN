@@ -12,8 +12,8 @@ void compute_output_error (struct neuron_layer* output_layer, struct vector trai
 
 	output_layer->error_vector = hadamard(tmp, tmp2);
 
-	free_vector(tmp);
-	free_vector(tmp2);
+	free_vector(&tmp);
+	free_vector(&tmp2);
 }
 
 void compute_error (struct neuron_layer* layer)
@@ -24,8 +24,8 @@ void compute_error (struct neuron_layer* layer)
 
 	layer->error_vector = hadamard(tmp, tmp2);
 
-	free_vector(tmp);
-	free_vector(tmp2);
+	free_vector(&tmp);
+	free_vector(&tmp2);
 
 	if (layer->prev_layer != NULL)
 		compute_error(layer->prev_layer);
