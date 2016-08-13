@@ -132,3 +132,115 @@ struct vector vector_add (struct vector vector1, struct vector vector2)
 
 	return ret;
 }
+
+struct matrix vector_to_matrix (struct vector vector)
+{
+	struct matrix ret;
+	int i;
+
+	ret.width = 1;
+	ret.height = vector.length;
+
+	ret.elements = (double**)malloc(vector.length * sizeof(double*));
+	for (i = 0; i < ret.height; i++)
+	{
+		ret.elements[i] = (double*)malloc(sizeof(double));
+		ret.elements[i][0] = vector.elements[i];
+	}
+
+	return ret;
+}
+
+struct matrix matrix_matrix_prod (struct matrix matrix1, struct matrix matrix2)
+{
+	struct matrix ret;
+	int i;
+	int j;
+	int k;
+	double sum;
+
+	if (matrix1.width != matrix2.height)
+		error(err_invalid_op, __LINE__, __FILE__, "Matrix multiplications requires the first matrix have the width of the second");
+
+	ret.width = matrix2.width;
+	ret.height = matrix1.height;
+
+	ret.elements = (double**)malloc(ret.height * sizeof(double*));
+	for (i = 0; i < ret.height; i++)
+		ret.elements[i] = (double*)malloc(ret.width * sizeof(double));
+	
+	for (i = 0; i < matrix2.width; i++)
+	{
+		for (j = 0; j < matrix1.height; j++)
+		{
+			sum = 0;
+			for (k = 0; k < matrix2.height; k++)
+				sum += matrix1[j][k] * matrix2[k][i];
+
+			ret.elements[j][i] = sum;
+		}
+	}
+
+	return ret;
+}
+
+struct matrix matrix_add (struct matrix matrix1, struct matrix matrix2)
+{
+	struct matrix ret;
+	int i;
+	int j;
+
+	if (matrix1.width != matrix2.width || matrix1.height != matrix2.height)
+		error(err_invalid_op, __LINE__, __FILE__, "Matrix addition requires the matrices to have identical dimensions");
+
+	ret.width = matrix1.width;
+	ret.height = matrix2.height;
+
+	ret.elements = (double**)malloc(ret.height * sizeof(double*));
+
+	for (i = 0; i < matrix1.height; i++)
+	{
+		ret.elements[i] = (double*)malloc(ret.width * sizeof(double));
+
+		for (j = 0; j < matrix1.width; j++)
+			ret.elements[i][j] = matrix1.elements[i][j] + matrix2.elements[i][j];
+	}
+
+	return ret;
+}
+
+struct matrix scalar_matrix_prod (struct matrix matrix, double scalar)
+{
+	struct matrix ret;
+	int i;
+	int j;
+
+	ret.width = matrix.width;
+	ret.height = matrix.height;
+
+	ret.elements = (double**)malloc(ret.height * sizeof(double*));
+
+	for (i = 0; i < matrix.height; i++)
+	{
+		ret.elements[i] = (double*)malloc(ret.width * sizeof(double));
+
+		for (j = 0; j < matrix.width; j++)
+			ret.elements[i][j] = matrix.elements[i][j] * scalar;
+	}
+
+	return ret;
+}
+
+struct vector scalar_vector_prod (struct vector vector, double scalar)
+{
+	struct vector ret;
+	int i;
+
+	ret.length = vector.length;
+	ret.elements = (double*)malloc(ret.length * sizeof(double));
+
+	for (i = 0; i < vector.length; i++)
+		ret.elements[i] = vector.elements[i] * scalar;
+
+	return ret;
+}

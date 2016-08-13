@@ -1,6 +1,7 @@
 #include <stdlib.h>
 
 #include "neuron.h"
+#include "linear.h"
 
 struct neuron_layer* create_input_layer (uint32_t size)
 {
@@ -50,14 +51,15 @@ void free_network(struct neuron_layer* to_free)
 
 struct vector simulate_network(struct neuron_layer* input_layer)
 {
-	struct vector tmp;
+	struct vector z_value_vector;
 
 	if (input_layer->prev_layer != NULL)
 	{
-		tmp = matrix_vector_prod(input_layer->weight_matrix, input_layer->prev_layer->activation_value_vector);
-		tmp = vector_add(tmp, input_layer->bias_vector);
+		z_value_vector = matrix_vector_prod(input_layer->weight_matrix, input_layer->prev_layer->activation_value_vector);
+		z_value_vector = vector_add(z_value_vector, input_layer->bias_vector);
+		input_layer->z_value_vector = z_value_vector;
 
-		input_layer->activation_value_vector = vector_map(tmp, activation_function);
+		input_layer->activation_value_vector = vector_map(z_value_vector, activation_function);
 	}
 
 	if (input_layer->next_layer != NULL)
