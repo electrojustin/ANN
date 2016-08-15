@@ -34,5 +34,5 @@ void compute_error (struct neuron_layer* layer)
 void backpropagate (struct neuron_layer* output_layer, struct vector training_output)
 {
 	compute_output_error(output_layer, training_output);
-	compue_error(output_layer->prev_layer);
+	compute_error(output_layer->prev_layer);
 }
