@@ -1,4 +1,4 @@
-all: error.o linear.o neuron.o backprop.o train.o
+all: error.o linear.o neuron.o backprop.o train.o sigmoid.o cost.o
 error.o: error.h error.c
 	gcc -c error.c
 linear.o: error.h linear.h linear.c
@@ -9,5 +9,9 @@ backprop.o: linear.h train.h neuron.h backprop.h backprop.c
 	gcc -c backprop.c
 train.o: linear.h neuron.h backprop.h train.h train.c
 	gcc -c train.c
+sigmoid.o: sigmoid.h sigmoid.c
+	gcc -c sigmoid.c
+cost.o: linear.h cost.h cost.c
+	gcc -c cost.c
 clean:
-	rm error.o linear.o neuron.o backprop.o train.o
+	rm error.o linear.o neuron.o backprop.o train.o sigmoid.o cost.o

@@ -71,7 +71,7 @@ void train_network (struct neuron_layer* input_layer, struct neuron_layer* outpu
 
 	for (i = 0; i < num_training_examples; i += batch_size)
 	{
-		for (j = i; j < i + batch_size; j++)
+		for (j = i; j < i + batch_size && j < num_training_examples; j++)
 		{
 			input_layer->activation_value_vector = training_inputs[j];
 
