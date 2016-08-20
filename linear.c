@@ -108,6 +108,7 @@ struct vector vector_map (struct vector to_map, double (*map_function)(double))
 	struct vector ret;
 	int i;
 
+	ret.length = to_map.length;
 	ret.elements = (double*)malloc(to_map.length * sizeof(double));
 
 	for (i = 0; i < to_map.length; i++)
@@ -256,11 +257,11 @@ struct matrix copy_matrix (struct matrix matrix)
 
 	ret.elements = (double**)malloc(ret.height * sizeof(double*));
 
-	for (i = 0; i < matrix.width; i++)
+	for (i = 0; i < matrix.height; i++)
 	{
 		ret.elements[i] = (double*)malloc(ret.width * sizeof(double));
 
-		for (j = 0; i < matrix.width; j++)
+		for (j = 0; j < matrix.width; j++)
 			ret.elements[i][j] = matrix.elements[i][j];
 	}
 
@@ -278,4 +279,6 @@ struct vector copy_vector (struct vector vector)
 
 	for (i = 0; i < vector.length; i++)
 		ret.elements[i] = vector.elements[i];
+
+	return ret;
 }

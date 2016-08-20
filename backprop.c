@@ -27,7 +27,7 @@ void compute_error (struct neuron_layer* layer)
 	free_vector(&tmp);
 	free_vector(&tmp2);
 
-	if (layer->prev_layer != NULL)
+	if (layer->prev_layer->prev_layer != NULL)
 		compute_error(layer->prev_layer);
 }
 

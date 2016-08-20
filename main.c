@@ -1,4 +1,6 @@
 #include <stdio.h>
+#include <stdlib.h>
+#include <math.h>
 
 #include "neuron.h"
 #include "train.h"
@@ -6,10 +8,16 @@
 #include "cost.h"
 #include "linear.h"
 
-void main (void)
+#define NUM_TRAIN 80000
+
+#define RAND ((double)rand()/RAND_MAX)
+
+struct vector inputs [NUM_TRAIN];
+struct vector outputs [NUM_TRAIN];
+
+int main (int argc, char** argv)
 {
-	struct vector inputs [80];
-	struct vector outputs [80];
+	struct vector final_output;
 	struct matrix initial_weights1;
 	struct matrix initial_weights2;
 	struct vector initial_bias1;
@@ -53,40 +61,44 @@ void main (void)
 	outputs[7] = copy_vector(outputs[1]);
 	outputs[7].elements[1] = 1.0; //1 1
 
-	for (i = 8; i < 80; i ++)
+	for (i = 8; i < NUM_TRAIN; i ++)
 	{
 		inputs[i] = copy_vector(inputs[i % 8]);
 		outputs[i] = copy_vector(outputs[i % 8]);
 	}
 
-	initial_weights2.width = 2;
-	initial_weights2.height = 3;
-	initial_weights2.elements = (double**)malloc(3 * sizeof(double*));
+	initial_weights2.width = 3;
+	initial_weights2.height = 2;
+	initial_weights2.elements = (double**)malloc(2 * sizeof(double*));
 	initial_weights1.width = 3;
 	initial_weights1.height = 3;
 	initial_weights1.elements = (double**)malloc(3 * sizeof(double*));
 	for (i = 0; i < 3; i++)
 	{
-		initial_weights2.elements[i] = (double*)malloc(2 * sizeof(double));
 		initial_weights1.elements[i] = (double*)malloc(3 * sizeof(double));
 		
-		initial_weights2.elements[i][0] = 1.0;
-		initial_weights2.elements[i][1] = 1.0;
-		
-		initial_weights1.elements[i][0] = 1.0;
-		initial_weights1.elements[i][1] = 1.0;
-		initial_weights1.elements[i][2] = 1.0;
+		initial_weights1.elements[i][0] = RAND;
+		initial_weights1.elements[i][1] = RAND;
+		initial_weights1.elements[i][2] = RAND;
 	}
+	initial_weights2.elements[0] = (double*)malloc(3 * sizeof(double));
+	initial_weights2.elements[0][0] = RAND;
+	initial_weights2.elements[0][1] = RAND;
+	initial_weights2.elements[0][2] = RAND;
+	initial_weights2.elements[1] = (double*)malloc(3 * sizeof(double));
+	initial_weights2.elements[1][0] = RAND;
+	initial_weights2.elements[1][1] = RAND;
+	initial_weights2.elements[1][2] = RAND;
 
 	initial_bias1.length = 3;
 	initial_bias1.elements = (double*)malloc(3 * sizeof(double));
-	initial_bias1.elements[0] = 1.0;
-	initial_bias1.elements[1] = 1.0;
-	initial_bias1.elements[2] = 1.0;
+	initial_bias1.elements[0] = RAND;
+	initial_bias1.elements[1] = RAND;
+	initial_bias1.elements[2] = RAND;
 	initial_bias2.length = 2;
 	initial_bias2.elements = (double*)malloc(2 * sizeof(double));
-	initial_bias2.elements[0] = 1.0;
-	initial_bias2.elements[1] = 1.0;
+	initial_bias2.elements[0] = RAND;
+	initial_bias2.elements[1] = RAND;
 
 	activation_function = sigmoid_activation_function;
 	derivative_activation_function = derivative_sigmoid_activation_function;
@@ -97,12 +109,16 @@ void main (void)
 	output_layer = add_neuron_layer(input_layer, initial_weights1, initial_bias1);
 	output_layer = add_neuron_layer(output_layer, initial_weights2, initial_bias2);
 
-	train_network(input_layer, output_layer, inputs, outputs, 80, 8, 3.0);
+	train_network(input_layer, output_layer, inputs, outputs, NUM_TRAIN, 8, 3.0);
 
 	input_layer->activation_value_vector.elements = (double*)malloc(3 * sizeof(double));
 	input_layer->activation_value_vector.elements[0] = 0.0;
 	input_layer->activation_value_vector.elements[1] = 1.0;
 	input_layer->activation_value_vector.elements[2] = 1.0;
 
-	simulate_network(input_layer);
+	final_output = simulate_network(input_layer);
+
+	printf("%f   %f\n", final_output.elements[0], final_output.elements[1]);
+
+	return 0;
 }
